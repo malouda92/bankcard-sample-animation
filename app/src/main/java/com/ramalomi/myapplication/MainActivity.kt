@@ -13,8 +13,8 @@ class MainActivity : AppCompatActivity(){
 
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
-    private lateinit var frontAnim: AnimatorSet
-    private lateinit var backAnim: AnimatorSet
+    private val frontAnim: AnimatorSet by lazy { AnimatorInflater.loadAnimator(applicationContext, R.animator.anim_front) as AnimatorSet }
+    private val backAnim: AnimatorSet by lazy { AnimatorInflater.loadAnimator(applicationContext, R.animator.anim_back) as AnimatorSet }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,9 +27,6 @@ class MainActivity : AppCompatActivity(){
             cardViewFront.cameraDistance = 8000 * scale
             cardViewBack.cameraDistance = 8000 * scale
         }
-
-        frontAnim = AnimatorInflater.loadAnimator(applicationContext, R.animator.anim_front) as AnimatorSet
-        backAnim = AnimatorInflater.loadAnimator(applicationContext, R.animator.anim_back) as AnimatorSet
 
         binding.editTextCCV.setOnFocusChangeListener { _, hasFocus ->
             if(hasFocus) {
@@ -45,56 +42,64 @@ class MainActivity : AppCompatActivity(){
             }
         }
 
-        binding.editTextCCV.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        initializeCardNumber()
+        initializeCardExp()
+        initializeCardCVC()
+    }
 
-            }
+    private fun initializeCardNumber()
+    {
+        binding.apply {
+            editTextNumber.addTextChangedListener(object: TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding.textViewCCV.text = s.toString()
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-
-            }
-
-        })
-
-        binding.editTextExp.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if(start == 1) {
-                    binding.editTextExp.append("/")
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    if(start.rem(5) == 3) {
+                        editTextNumber.append(" ")
+                    }
+                    textViewNumber.text = s.toString()
                 }
-                binding.textViewExp.text = s.toString()
-            }
 
-            override fun afterTextChanged(s: Editable?) {
+                override fun afterTextChanged(s: Editable?) {}
 
-            }
+            })
+        }
 
-        })
+    }
 
-        binding.editTextNumber.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+    private fun initializeCardExp()
+    {
+        binding.apply{
+            editTextExp.addTextChangedListener(object: TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if(start.rem(5) == 3) {
-                    binding.editTextNumber.append(" ")
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    if(start == 1) {
+                        editTextExp.append("/")
+                    }
+                    textViewExp.text = s.toString()
                 }
-                binding.textViewNumber.text = s.toString()
-            }
 
-            override fun afterTextChanged(s: Editable?) {
+                override fun afterTextChanged(s: Editable?) {}
 
-            }
+            })
+        }
+    }
 
-        })
+    private fun initializeCardCVC()
+    {
+        binding.apply {
+            editTextCCV.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    textViewCCV.text = s.toString()
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
+
+            })
+        }
 
     }
 
